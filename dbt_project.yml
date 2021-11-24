@@ -17,3 +17,4 @@ vars:
     campaign_history: "{{ ref('stg_facebook_ads__campaign_history') }}"
     creative_history: "{{ ref('stg_facebook_ads__creative_history') }}"
     url_tag: "{{ ref('stg_facebook_ads__url_tag') }}"
+    client_performance_ads: "{{ ref('stg_facebook_ads__client_performance_ads') }}"
