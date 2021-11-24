@@ -50,7 +50,7 @@ with report as (
 ), joined as (
 
     select
-        client_facebook_ads_table.date_day,
+        report.date_day,
         accounts.account_id,
         accounts.account_name,
         campaigns.campaign_id,
