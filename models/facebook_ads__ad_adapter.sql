@@ -47,7 +47,7 @@ with report as (
     from {{ var('campaign_history') }}
     where is_most_recent_record = true
 
-), joined as (
+), pre_joined as (
 
     select
         report.date_day,
@@ -98,6 +98,43 @@ with report as (
     left join publisher_platforms
         on cast(publisher_platforms.publisher_platform as {{ dbt_utils.type_string() }}) = cast(report.publisher_platform as {{ dbt_utils.type_string() }})
     {{ dbt_utils.group_by(19) }}
+
+), joined as (
+
+    select
+        pre_joined.date_day,
+        pre_joined.account_id,
+        pre_joined.account_name,
+        pre_joined.campaign_id,
+        pre_joined.campaign_name,
+        pre_joined.ad_set_id,
+        pre_joined.ad_set_name,
+        pre_joined.ad_id,
+        pre_joined.ad_name,
+        pre_joined.creative_id,
+        pre_joined.creative_name,
+        pre_joined.base_url,
+        pre_joined.url_host,
+        pre_joined.url_path,
+        {% if var('facebook_auto_tagging_enabled', false) %}
+
+        coalesce( pre_joined.utm_source, 'facebook')  as utm_source,
+        coalesce( pre_joined.utm_medium , 'cpc') as utm_medium,
+
+        {% else %}
+
+        pre_joined.utm_source,
+        pre_joined.utm_medium,
+
+        {% endif %}
+
+        pre_joined.utm_campaign,
+        pre_joined.utm_content,
+        pre_joined.utm_term,
+        pre_joined.clicks,
+        pre_joined.impressions,
+        pre_joined.spend
+    from pre_joined
 
 )
 
