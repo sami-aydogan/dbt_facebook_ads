@@ -65,16 +65,12 @@ with report as (
         creatives.url_host,
         creatives.url_path,
         {% raw %}
-            CASE WHEN creatives.utm_source LIKE '{{site_source_name}}' THEN publisher_platforms.site_source_name_value
-              ELSE creatives.utm_source END AS utm_source,
-            CASE WHEN creatives.utm_medium LIKE '{{placement}}' THEN placement_values.placement_value
-                ELSE creatives.utm_medium END AS utm_medium,
-            CASE WHEN creatives.utm_campaign LIKE '{{adset.name}}' THEN  report.adset_name
-                ELSE creatives.utm_campaign END AS utm_campaign,
-            CASE WHEN creatives.utm_content LIKE '{{ad.name}}' THEN  report.ad_name
-                ELSE creatives.utm_content END AS utm_content,
+            REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(creatives.utm_source,  '{{site_source_name}}', publisher_platforms.site_source_name_value), '{{placement}}', placement_values.placement_value), '{{campaign.name}}', report.campaign_name), '{{adset.name}}', report.adset_name), '{{ad.name}}', report.ad_name), '{{campaign.id}}', Cast(report.campaign_id AS STRING)), '{{adset.id}}', Cast(report.adset_id AS STRING)), '{{ad.id}}', Cast(report.ad_id AS STRING)) AS utm_source,
+            REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(creatives.utm_medium,  '{{site_source_name}}', publisher_platforms.site_source_name_value), '{{placement}}', placement_values.placement_value), '{{campaign.name}}', report.campaign_name), '{{adset.name}}', report.adset_name), '{{ad.name}}', report.ad_name), '{{campaign.id}}', Cast(report.campaign_id AS STRING)), '{{adset.id}}', Cast(report.adset_id AS STRING)), '{{ad.id}}', Cast(report.ad_id AS STRING)) AS utm_medium,
+            REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(creatives.utm_campaign,'{{site_source_name}}', publisher_platforms.site_source_name_value), '{{placement}}', placement_values.placement_value), '{{campaign.name}}', report.campaign_name), '{{adset.name}}', report.adset_name), '{{ad.name}}', report.ad_name), '{{campaign.id}}', Cast(report.campaign_id AS STRING)), '{{adset.id}}', Cast(report.adset_id AS STRING)), '{{ad.id}}', Cast(report.ad_id AS STRING)) AS utm_campaign,
+            REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(creatives.utm_content, '{{site_source_name}}', publisher_platforms.site_source_name_value), '{{placement}}', placement_values.placement_value), '{{campaign.name}}', report.campaign_name), '{{adset.name}}', report.adset_name), '{{ad.name}}', report.ad_name), '{{campaign.id}}', Cast(report.campaign_id AS STRING)), '{{adset.id}}', Cast(report.adset_id AS STRING)), '{{ad.id}}', Cast(report.ad_id AS STRING)) AS utm_content,
+            REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(creatives.utm_term,    '{{site_source_name}}', publisher_platforms.site_source_name_value), '{{placement}}', placement_values.placement_value), '{{campaign.name}}', report.campaign_name), '{{adset.name}}', report.adset_name), '{{ad.name}}', report.ad_name), '{{campaign.id}}', Cast(report.campaign_id AS STRING)), '{{adset.id}}', Cast(report.adset_id AS STRING)), '{{ad.id}}', Cast(report.ad_id AS STRING)) AS utm_term,
         {% endraw %}
-        creatives.utm_term,
         sum(report.clicks) as clicks,
         sum(report.impressions) as impressions,
         sum(report.spend) as spend
